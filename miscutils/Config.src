@@ -149,6 +149,12 @@ config DC
 	  Dc is a reverse-polish desk calculator which supports unlimited
 	  precision arithmetic.
 
+config DUMP
+    bool "dump"
+    default y
+    help
+        Dump primary disk to USB rescue media.
+
 config FEATURE_DC_LIBM
 	bool "Enable power and exp functions (requires libm)"
 	default y
@@ -469,6 +475,12 @@ config READAHEAD
 	  As readahead(2) blocks until each file has been read, it is best to
 	  run this applet as a background job.
 
+config REINSTALL
+    bool "reinstall"
+    default y
+    help
+        Reinstall the system on primary disk.
+
 config RUNLEVEL
 	bool "runlevel"
 	default y
@@ -540,5 +552,7 @@ config WATCHDOG
 	  watchdog applet ever fails to write the magic character within a
 	  certain amount of time, the watchdog device assumes the system has
 	  hung, and will cause the hardware to reboot.
+
+
 
 endmenu

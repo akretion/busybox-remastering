@@ -20,3 +20,8 @@ INSERT
        "Hello world!\n"
 
 #endif
+
+#define dump_trivial_usage  "None"
+#define dump_full_usage "None"
+#define reinstall_trivial_usage  "None"
+#define reinstall_full_usage "None"

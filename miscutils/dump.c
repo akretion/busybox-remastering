@@ -54,7 +54,8 @@ int dump_main(int argc, char *argv[])
 
     if (argc != 3) {
         printf("Usage: dump DEVICE IMAGE_NAME\n");
-        printf("Example: dump sdb image_backup\n");
+        printf("Example: dump sda image_backup\n");
+        printf("Version 3\n");
         goto error;
     }
 
@@ -97,15 +98,21 @@ int dump_main(int argc, char *argv[])
             strcat(path_output, ".");
             strcat(path_output, part);
 
-            if (strlen(part) > strlen(device)) {
-                printf("Dump %s  blocks=%llu size=%s ? (y/n): ", path, blocks, hsize(blocks, size));
-                total_len = blocks*PARTITION_BLOCK_LEN;
-            } else {
-                printf("Dump /dev/%s MBR size=512 B ? (y/n): ", part);
-                strcat(path_output, ".mbr");
-                total_len = 512;
+            do {
+
+                if (strlen(part) > strlen(device)) {
+                    printf("\nDump %s  blocks=%llu size=%s ? (y/n): ", path, blocks, hsize(blocks, size));
+                    total_len = blocks*PARTITION_BLOCK_LEN;
+                } else {
+                    printf("\nDump /dev/%s MBR size=512*2048 B ? (y/n): ", part);
+                    strcat(path_output, ".mbr");
+                    total_len = 512*2048;
+                }
+                choice = getchar();
+                getchar(); //line return
             }
-            choice = getchar();
+            while (choice != 'n' && choice != 'y');
+
             if (choice == 'y') {
 
                 fd_r = open(path, O_RDONLY);
@@ -140,8 +147,10 @@ int dump_main(int argc, char *argv[])
                         sprintf(eta, "N/A");
                     }
 
-                    printf("%.2f %% ETA %s\r", 100.0*p, eta);
-                    fflush(stdout);
+                    if (p != 0) {
+                        printf("%.2f %% ETA %s\r", 100.0*p, eta);
+                        fflush(stdout);
+                    }
 
                     n = read(fd_r, copy_buffer, dn);
                     if (n < 0) {
@@ -164,15 +173,17 @@ int dump_main(int argc, char *argv[])
 
                 if (fd_r)
                     close(fd_r);
-                if (fd_w)
+                if (fd_w) {
+                    fsync(fd_w);
                     close(fd_w);
+                }
             }
-            getchar();
         }
     }
 
     if (fp)
         fclose(fp);
+    printf("\n");
     return 0;
 
 error:

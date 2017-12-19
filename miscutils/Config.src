@@ -5,6 +5,19 @@
 
 menu "Miscellaneous Utilities"
 
+
 INSERT
+
+config DUMP
+    bool "dump"
+    default y
+    help
+        Dump primary disk to USB rescue media.
+
+config REINSTALL
+    bool "reinstall"
+    default y
+    help
+        Reinstall the system on primary disk.
 
 endmenu
